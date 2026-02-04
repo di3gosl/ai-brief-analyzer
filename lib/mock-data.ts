@@ -4,7 +4,6 @@ export const providers = [
     { id: "openai", name: "OpenAI" },
     { id: "anthropic", name: "Anthropic" },
     { id: "google", name: "Google" },
-    { id: "mistral", name: "Mistral" },
 ] as const;
 
 export const modelsByProvider: Record<
@@ -39,14 +38,6 @@ export const modelsByProvider: Record<
             id: "gemini-1.5-flash",
             name: "Gemini 1.5 Flash",
             costPer1kTokens: 0.000075,
-        },
-    ],
-    mistral: [
-        { id: "mistral-large", name: "Mistral Large", costPer1kTokens: 0.004 },
-        {
-            id: "mistral-medium",
-            name: "Mistral Medium",
-            costPer1kTokens: 0.0027,
         },
     ],
 };
@@ -295,16 +286,6 @@ export const mockHistoryItems = [
     },
     {
         id: "7",
-        title: "Social Media Scheduling Tool",
-        model: "Mistral Large",
-        provider: "Mistral",
-        cost: 0.0134,
-        date: "2026-01-28T08:45:00Z",
-        inputTokens: 756,
-        outputTokens: 1987,
-    },
-    {
-        id: "8",
         title: "Learning Management System",
         model: "GPT-4 Turbo",
         provider: "OpenAI",
