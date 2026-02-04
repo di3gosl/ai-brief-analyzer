@@ -2,7 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FileText, History, BarChart3, DollarSign } from "lucide-react";
+import {
+    FileText,
+    History,
+    BarChart3,
+    DollarSign,
+    Sun,
+    Moon,
+    Laptop,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +23,7 @@ import {
 } from "@/components/ui/select";
 import { providers, modelsByProvider } from "@/lib/mock-data";
 import { useState } from "react";
+import { useTheme } from "next-themes";
 
 const navigation = [
     { name: "Analyze", href: "/", icon: FileText },
@@ -24,6 +33,7 @@ const navigation = [
 
 export function Header() {
     const pathname = usePathname();
+    const { theme, setTheme } = useTheme();
     const [selectedProvider, setSelectedProvider] = useState("openai");
     const [selectedModel, setSelectedModel] = useState("gpt-4o");
 
@@ -84,8 +94,26 @@ export function Header() {
                 {/* Spacer */}
                 <div className="flex-1" />
 
-                {/* Model Selector and Cost Badge */}
+                {/* Theme Selector, Model Selector and Cost Badge */}
                 <div className="flex items-center gap-2">
+                    {/* Theme Selector */}
+                    <Select value={theme} onValueChange={setTheme}>
+                        <SelectTrigger className="w-35">
+                            <SelectValue placeholder="Theme" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="system">
+                                <Laptop /> System
+                            </SelectItem>
+                            <SelectItem value="light">
+                                <Sun /> Light
+                            </SelectItem>
+                            <SelectItem value="dark">
+                                <Moon /> Dark
+                            </SelectItem>
+                        </SelectContent>
+                    </Select>
+
                     {/* Provider Selector */}
                     <Select
                         value={selectedProvider}
