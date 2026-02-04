@@ -10,6 +10,7 @@ import {
     Sun,
     Moon,
     Laptop,
+    Menu,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,13 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import {
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet";
 import { providers, modelsByProvider } from "@/lib/mock-data";
 import { useState } from "react";
 import { useTheme } from "next-themes";
@@ -36,6 +44,7 @@ export function Header() {
     const { theme, setTheme } = useTheme();
     const [selectedProvider, setSelectedProvider] = useState("openai");
     const [selectedModel, setSelectedModel] = useState("gpt-4o");
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const currentModels = modelsByProvider[selectedProvider] || [];
     const currentModel = currentModels.find((m) => m.id === selectedModel);
@@ -64,8 +73,8 @@ export function Header() {
                     </span>
                 </div>
 
-                {/* Navigation */}
-                <nav className="flex items-center gap-1">
+                {/* Navigation - Desktop */}
+                <nav className="hidden md:flex items-center gap-1">
                     {navigation.map((item) => {
                         const isActive =
                             pathname === item.href ||
@@ -101,7 +110,7 @@ export function Header() {
                         value={selectedProvider}
                         onValueChange={handleProviderChange}
                     >
-                        <SelectTrigger className="w-30 h-8 text-xs" size="sm">
+                        <SelectTrigger className="w-28 md:w-30 h-8 text-xs" size="sm">
                             <SelectValue placeholder="Provider" />
                         </SelectTrigger>
                         <SelectContent>
@@ -121,7 +130,7 @@ export function Header() {
                         value={selectedModel}
                         onValueChange={setSelectedModel}
                     >
-                        <SelectTrigger className="w-35 h-8 text-xs" size="sm">
+                        <SelectTrigger className="w-30 md:w-35 h-8 text-xs" size="sm">
                             <SelectValue placeholder="Model" />
                         </SelectTrigger>
                         <SelectContent>
@@ -142,9 +151,12 @@ export function Header() {
                         {estimatedCost}
                     </Badge>
 
-                    {/* Theme Selector */}
+                    {/* Theme Selector - Desktop */}
                     <Select value={theme} onValueChange={setTheme}>
-                        <SelectTrigger className="text-xs w-28 h-8 ml-6 hidden md:flex" size="sm">
+                        <SelectTrigger
+                            className="text-xs w-28 h-8 ml-6 hidden md:flex"
+                            size="sm"
+                        >
                             <SelectValue placeholder="Theme" />
                         </SelectTrigger>
                         <SelectContent>
@@ -159,6 +171,96 @@ export function Header() {
                             </SelectItem>
                         </SelectContent>
                     </Select>
+
+                    {/* Mobile Menu */}
+                    <Sheet
+                        open={mobileMenuOpen}
+                        onOpenChange={setMobileMenuOpen}
+                    >
+                        <SheetTrigger asChild className="md:hidden">
+                            <Button variant="ghost" size="sm" className="ml-2">
+                                <Menu className="h-5 w-5" />
+                                <span className="sr-only">Open menu</span>
+                            </Button>
+                        </SheetTrigger>
+                        <SheetContent side="right" className="w-70">
+                            <SheetHeader>
+                                <SheetTitle>Menu</SheetTitle>
+                            </SheetHeader>
+                            <div className="flex flex-col gap-4 mt-6">
+                                {/* Navigation Links */}
+                                <nav className="flex flex-col gap-2">
+                                    {navigation.map((item) => {
+                                        const isActive =
+                                            pathname === item.href ||
+                                            (item.href !== "/" &&
+                                                pathname.startsWith(item.href));
+                                        return (
+                                            <Link
+                                                key={item.name}
+                                                href={item.href}
+                                                onClick={() =>
+                                                    setMobileMenuOpen(false)
+                                                }
+                                            >
+                                                <Button
+                                                    variant={
+                                                        isActive
+                                                            ? "secondary"
+                                                            : "ghost"
+                                                    }
+                                                    size="sm"
+                                                    className={cn(
+                                                        "w-full justify-start gap-2 rounded-none px-4!",
+                                                        isActive &&
+                                                            "bg-secondary",
+                                                    )}
+                                                >
+                                                    <item.icon className="h-4 w-4" />
+                                                    {item.name}
+                                                </Button>
+                                            </Link>
+                                        );
+                                    })}
+                                </nav>
+
+                                {/* Theme Selector */}
+                                <div className="border-t p-4">
+                                    <label className="text-sm font-medium mb-2 block">
+                                        Theme
+                                    </label>
+                                    <Select
+                                        value={theme}
+                                        onValueChange={setTheme}
+                                    >
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder="Select theme" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="system">
+                                                <div className="flex items-center gap-2">
+                                                    <Laptop className="h-4 w-4" />
+                                                    System
+                                                </div>
+                                            </SelectItem>
+                                            <SelectItem value="light">
+                                                <div className="flex items-center gap-2">
+                                                    <Sun className="h-4 w-4" />
+                                                    Light
+                                                </div>
+                                            </SelectItem>
+                                            <SelectItem value="dark">
+                                                <div className="flex items-center gap-2">
+                                                    <Moon className="h-4 w-4" />
+                                                    Dark
+                                                </div>
+                                            </SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
+                        </SheetContent>
+                    </Sheet>
                 </div>
             </div>
         </header>
