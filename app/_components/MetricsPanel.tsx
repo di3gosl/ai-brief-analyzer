@@ -10,7 +10,7 @@ import {
     Loader2,
 } from "lucide-react";
 
-interface MetricsPanelProps {
+interface Props {
     inputTokens: number;
     outputTokens: number;
     totalTokens: number;
@@ -26,7 +26,7 @@ export function MetricsPanel({
     estimatedCost,
     latency,
     status,
-}: MetricsPanelProps) {
+}: Props) {
     const statusConfig = {
         idle: {
             icon: Circle,

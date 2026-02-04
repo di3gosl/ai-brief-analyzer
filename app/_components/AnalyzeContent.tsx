@@ -5,7 +5,7 @@ import { Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { MetricsPanel } from "./MetricsPanel";
-import { AnalysisResults } from "./AnalysisResults";
+import { AnalysisResults } from "../../components/AnalysisResults";
 import { mockMetrics, sampleBrief } from "@/lib/mock-data";
 
 export function AnalyzeContent() {
