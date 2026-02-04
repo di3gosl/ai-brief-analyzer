@@ -309,7 +309,6 @@ export const mockAnalyticsData = {
         { model: "Claude 3.5 Sonnet", count: 234, percentage: 27.6 },
         { model: "Gemini 1.5 Pro", count: 156, percentage: 18.4 },
         { model: "GPT-4o Mini", count: 89, percentage: 10.5 },
-        { model: "Other", count: 56, percentage: 6.6 },
     ],
     costOverTime: [
         { month: "Sep 2025", cost: 18.45 },
