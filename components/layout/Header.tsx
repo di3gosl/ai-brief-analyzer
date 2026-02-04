@@ -96,24 +96,6 @@ export function Header() {
 
                 {/* Theme Selector, Model Selector and Cost Badge */}
                 <div className="flex items-center gap-2">
-                    {/* Theme Selector */}
-                    <Select value={theme} onValueChange={setTheme}>
-                        <SelectTrigger className="w-35">
-                            <SelectValue placeholder="Theme" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="system">
-                                <Laptop /> System
-                            </SelectItem>
-                            <SelectItem value="light">
-                                <Sun /> Light
-                            </SelectItem>
-                            <SelectItem value="dark">
-                                <Moon /> Dark
-                            </SelectItem>
-                        </SelectContent>
-                    </Select>
-
                     {/* Provider Selector */}
                     <Select
                         value={selectedProvider}
@@ -159,6 +141,24 @@ export function Header() {
                         <DollarSign className="h-3 w-3" />
                         {estimatedCost}
                     </Badge>
+
+                    {/* Theme Selector */}
+                    <Select value={theme} onValueChange={setTheme}>
+                        <SelectTrigger className="text-xs w-28 h-8 ml-6" size="sm">
+                            <SelectValue placeholder="Theme" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="system">
+                                <Laptop /> System
+                            </SelectItem>
+                            <SelectItem value="light">
+                                <Sun /> Light
+                            </SelectItem>
+                            <SelectItem value="dark">
+                                <Moon /> Dark
+                            </SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
             </div>
         </header>
