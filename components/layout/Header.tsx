@@ -144,7 +144,7 @@ export function Header() {
 
                     {/* Theme Selector */}
                     <Select value={theme} onValueChange={setTheme}>
-                        <SelectTrigger className="text-xs w-28 h-8 ml-6" size="sm">
+                        <SelectTrigger className="text-xs w-28 h-8 ml-6 hidden md:flex" size="sm">
                             <SelectValue placeholder="Theme" />
                         </SelectTrigger>
                         <SelectContent>

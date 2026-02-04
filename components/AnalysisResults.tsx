@@ -165,8 +165,8 @@ export function AnalysisResults() {
                                                         ? "destructive"
                                                         : risk.level ===
                                                             "medium"
-                                                          ? "default"
-                                                          : "outline"
+                                                          ? "secondary"
+                                                          : "default"
                                                 }
                                                 className="shrink-0 capitalize"
                                             >
