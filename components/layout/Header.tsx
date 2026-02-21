@@ -2,16 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-    FileText,
-    History,
-    BarChart3,
-    DollarSign,
-    Sun,
-    Moon,
-    Laptop,
-    Menu,
-} from "lucide-react";
+import { FileText, History, BarChart3, DollarSign, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -31,7 +22,12 @@ import {
 } from "@/components/ui/sheet";
 import { providers, modelsByProvider } from "@/lib/mock-data";
 import { useState } from "react";
-import { useTheme } from "next-themes";
+import dynamic from "next/dynamic";
+
+const ThemeSelect = dynamic(() => import("./ThemeSelect"), { ssr: false });
+const MobileThemeSelect = dynamic(() => import("./MobileThemeSelect"), {
+    ssr: false,
+});
 
 const navigation = [
     { name: "Analyze", href: "/", icon: FileText },
@@ -41,7 +37,6 @@ const navigation = [
 
 export function Header() {
     const pathname = usePathname();
-    const { theme, setTheme } = useTheme();
     const [selectedProvider, setSelectedProvider] = useState("openai");
     const [selectedModel, setSelectedModel] = useState("gpt-4o");
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -110,7 +105,10 @@ export function Header() {
                         value={selectedProvider}
                         onValueChange={handleProviderChange}
                     >
-                        <SelectTrigger className="w-28 md:w-30 h-8 text-xs" size="sm">
+                        <SelectTrigger
+                            className="w-28 md:w-30 h-8 text-xs"
+                            size="sm"
+                        >
                             <SelectValue placeholder="Provider" />
                         </SelectTrigger>
                         <SelectContent>
@@ -130,7 +128,10 @@ export function Header() {
                         value={selectedModel}
                         onValueChange={setSelectedModel}
                     >
-                        <SelectTrigger className="w-30 md:w-35 h-8 text-xs" size="sm">
+                        <SelectTrigger
+                            className="w-30 md:w-35 h-8 text-xs"
+                            size="sm"
+                        >
                             <SelectValue placeholder="Model" />
                         </SelectTrigger>
                         <SelectContent>
@@ -152,25 +153,7 @@ export function Header() {
                     </Badge>
 
                     {/* Theme Selector - Desktop */}
-                    <Select value={theme} onValueChange={setTheme}>
-                        <SelectTrigger
-                            className="text-xs w-28 h-8 ml-6 hidden md:flex"
-                            size="sm"
-                        >
-                            <SelectValue placeholder="Theme" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="system">
-                                <Laptop /> System
-                            </SelectItem>
-                            <SelectItem value="light">
-                                <Sun /> Light
-                            </SelectItem>
-                            <SelectItem value="dark">
-                                <Moon /> Dark
-                            </SelectItem>
-                        </SelectContent>
-                    </Select>
+                    <ThemeSelect />
 
                     {/* Mobile Menu */}
                     <Sheet
@@ -229,34 +212,7 @@ export function Header() {
                                     <label className="text-sm font-medium mb-2 block">
                                         Theme
                                     </label>
-                                    <Select
-                                        value={theme}
-                                        onValueChange={setTheme}
-                                    >
-                                        <SelectTrigger className="w-full">
-                                            <SelectValue placeholder="Select theme" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="system">
-                                                <div className="flex items-center gap-2">
-                                                    <Laptop className="h-4 w-4" />
-                                                    System
-                                                </div>
-                                            </SelectItem>
-                                            <SelectItem value="light">
-                                                <div className="flex items-center gap-2">
-                                                    <Sun className="h-4 w-4" />
-                                                    Light
-                                                </div>
-                                            </SelectItem>
-                                            <SelectItem value="dark">
-                                                <div className="flex items-center gap-2">
-                                                    <Moon className="h-4 w-4" />
-                                                    Dark
-                                                </div>
-                                            </SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                                    <MobileThemeSelect />
                                 </div>
                             </div>
                         </SheetContent>
