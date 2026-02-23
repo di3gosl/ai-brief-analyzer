@@ -1,0 +1,227 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ──────────────────────────────────────────────
+// Core table – one row per "Analyze Brief"
+// ──────────────────────────────────────────────
+
+model Analysis {
+  id        String  @id @default(cuid())
+  brief     String  @db.Text // the full project brief the user entered
+  title     String  @default("") // denormalised from projectSummary for quick listing
+  model     String // e.g. "gpt-4o", "claude-3-5-sonnet"
+  modelName String? // e.g. "GPT-4o", "Claude 3.5 Sonnet"
+  provider  String // e.g. "openai", "anthropic", "google"
+
+  // Token / cost metrics
+  inputTokens   Int   @default(0)
+  outputTokens  Int   @default(0)
+  totalTokens   Int   @default(0)
+  estimatedCost Float @default(0)
+  latency       Float @default(0) // seconds
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // ─── Result relations (one analysis → many sections) ───
+  projectSummary         ProjectSummary?
+  functionalRequirements FunctionalRequirement[]
+  mvpItems               MvpItem[]
+  techStackCategories    TechStackCategory[]
+  risks                  Risk[]
+  assumptions            Assumption[]
+  missingQuestions       MissingQuestion[]
+  estimationSummary      EstimationSummary?
+  estimationPhases       EstimationPhase[]
+  estimationCaveats      EstimationCaveat[]
+  niceToHaveItems        NiceToHaveItem[]
+
+  @@index([createdAt(sort: Desc)])
+  @@index([provider, model])
+}
+
+// ──────────────────────────────────────────────
+// Section 1 – Project Summary (1-to-1)
+// ──────────────────────────────────────────────
+
+model ProjectSummary {
+  id         String @id @default(cuid())
+  analysisId String @unique
+  content    String @db.Text
+
+  analysis Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+}
+
+// ──────────────────────────────────────────────
+// Section 2 – Functional Requirements (1-to-many)
+// ──────────────────────────────────────────────
+
+model FunctionalRequirement {
+  id         String @id @default(cuid())
+  analysisId String
+  content    String @db.Text
+  sortOrder  Int
+
+  analysis Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+
+  @@index([analysisId, sortOrder])
+}
+
+// ──────────────────────────────────────────────
+// Section 3 – MVP (1-to-many)
+// ──────────────────────────────────────────────
+
+model MvpItem {
+  id         String @id @default(cuid())
+  analysisId String
+  content    String @db.Text
+  sortOrder  Int
+
+  analysis Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+
+  @@index([analysisId, sortOrder])
+}
+
+// ──────────────────────────────────────────────
+// Section 3b – Nice-to-Have (1-to-many)
+// ──────────────────────────────────────────────
+
+model NiceToHaveItem {
+  id         String @id @default(cuid())
+  analysisId String
+  content    String @db.Text
+  sortOrder  Int
+
+  analysis Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+
+  @@index([analysisId, sortOrder])
+}
+
+// ──────────────────────────────────────────────
+// Section 4 – Technical Stack (category → items)
+// ──────────────────────────────────────────────
+
+model TechStackCategory {
+  id         String          @id @default(cuid())
+  analysisId String
+  name       String // e.g. "Frontend", "Backend"
+  sortOrder  Int
+  items      TechStackItem[]
+
+  analysis Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+
+  @@index([analysisId, sortOrder])
+}
+
+model TechStackItem {
+  id         String @id @default(cuid())
+  categoryId String
+  name       String
+  sortOrder  Int
+
+  category TechStackCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@index([categoryId, sortOrder])
+}
+
+// ──────────────────────────────────────────────
+// Section 5 – Risks (1-to-many, with severity)
+// ──────────────────────────────────────────────
+
+model Risk {
+  id          String    @id @default(cuid())
+  analysisId  String
+  level       RiskLevel
+  description String    @db.Text
+  sortOrder   Int
+
+  analysis Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+
+  @@index([analysisId, sortOrder])
+}
+
+// ──────────────────────────────────────────────
+// Section 5b – Assumptions (1-to-many)
+// ──────────────────────────────────────────────
+
+model Assumption {
+  id         String @id @default(cuid())
+  analysisId String
+  content    String @db.Text
+  sortOrder  Int
+
+  analysis Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+
+  @@index([analysisId, sortOrder])
+}
+
+// ──────────────────────────────────────────────
+// Section 6 – Missing Information / Questions
+// ──────────────────────────────────────────────
+
+model MissingQuestion {
+  id         String @id @default(cuid())
+  analysisId String
+  content    String @db.Text
+  sortOrder  Int
+
+  analysis Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+
+  @@index([analysisId, sortOrder])
+}
+
+// ──────────────────────────────────────────────
+// Section 7 – Rough Estimation
+// ──────────────────────────────────────────────
+
+// One-to-one summary row
+model EstimationSummary {
+  id            String @id @default(cuid())
+  analysisId    String @unique
+  totalDuration String // e.g. "16-18 weeks"
+  totalEffort   String // e.g. "600-700 hours"
+  teamSize      String // e.g. "3-4 developers + 1 designer + 1 QA"
+
+  analysis Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+}
+
+// Phase rows
+model EstimationPhase {
+  id         String @id @default(cuid())
+  analysisId String
+  name       String
+  duration   String
+  effort     String
+  sortOrder  Int
+
+  analysis Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+
+  @@index([analysisId, sortOrder])
+}
+
+// Caveat rows
+model EstimationCaveat {
+  id         String @id @default(cuid())
+  analysisId String
+  content    String @db.Text
+  sortOrder  Int
+
+  analysis Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+
+  @@index([analysisId, sortOrder])
+}
+
+// ──────────────────────────────────────────────
+// Enums
+// ──────────────────────────────────────────────
+
+enum RiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
