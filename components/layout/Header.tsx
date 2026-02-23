@@ -24,11 +24,11 @@ import {
     PROVIDERS,
     MODELS_BY_PROVIDER,
     estimateRequestCost,
-    type ProviderId,
 } from "@/lib/models";
 import { useModelSelection } from "@/lib/model-context";
 import { useState } from "react";
 import dynamic from "next/dynamic";
+import type { ProviderId } from "@/types/models";
 
 const ThemeSelect = dynamic(() => import("./ThemeSelect"), { ssr: false });
 const MobileThemeSelect = dynamic(() => import("./MobileThemeSelect"), {
@@ -38,7 +38,7 @@ const MobileThemeSelect = dynamic(() => import("./MobileThemeSelect"), {
 const navigation = [
     { name: "Analyze", href: "/", icon: FileText },
     { name: "History", href: "/history", icon: History },
-    { name: "Analytics", href: "/analytics", icon: BarChart3 },
+    { name: "Usage", href: "/analytics", icon: BarChart3 },
 ];
 
 export function Header() {

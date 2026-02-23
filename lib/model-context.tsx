@@ -7,7 +7,8 @@ import {
     useCallback,
     type ReactNode,
 } from "react";
-import { MODELS_BY_PROVIDER, type ProviderId } from "@/lib/models";
+import { MODELS_BY_PROVIDER } from "@/lib/models";
+import type { ProviderId } from "@/types/models";
 
 interface ModelSelectionContextValue {
     provider: ProviderId;

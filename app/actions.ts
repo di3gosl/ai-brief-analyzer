@@ -3,31 +3,12 @@
 import { generateText, Output } from "ai";
 import { getModelConfig, calculateCost } from "@/lib/models";
 import { BRIEF_ANALYSIS_SYSTEM_PROMPT } from "@/lib/prompts";
-import { briefAnalysisSchema, type BriefAnalysis } from "@/lib/schemas";
+import { briefAnalysisSchema } from "@/lib/schemas";
 import { openai } from "@ai-sdk/openai";
 import { anthropic } from "@ai-sdk/anthropic";
 import { google } from "@ai-sdk/google";
+import type { AnalyzeResult, AnalyzeError } from "@/types/analyze";
 import prisma from "@/lib/prisma";
-
-/**
- * Types
- */
-
-export interface AnalyzeResult {
-    analysisId: string;
-    analysis: BriefAnalysis;
-    model: string;
-    provider: string;
-    inputTokens: number;
-    outputTokens: number;
-    totalTokens: number;
-    estimatedCost: number;
-    latency: number; // seconds
-}
-
-export interface AnalyzeError {
-    error: string;
-}
 
 export async function analyzeBrief(
     brief: string,
@@ -100,6 +81,7 @@ export async function analyzeBrief(
                 brief,
                 title: output.projectSummary.title,
                 model: modelId,
+                modelName: config.displayName,
                 provider: config.provider,
                 inputTokens,
                 outputTokens,

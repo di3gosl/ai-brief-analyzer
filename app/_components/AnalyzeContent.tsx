@@ -9,11 +9,10 @@ import { AnalysisResults } from "@/components/AnalysisResults";
 import { MetricsPanel } from "./MetricsPanel";
 import { sampleBrief } from "@/lib/mock-data";
 import { useModelSelection } from "@/lib/model-context";
-import { analyzeBrief, type AnalyzeResult } from "@/app/actions/analyze";
+import { analyzeBrief } from "@/app/actions";
 import { getModelConfig } from "@/lib/models";
 import type { BriefAnalysis } from "@/lib/schemas";
-
-type Status = "idle" | "running" | "success" | "error";
+import type { Status, AnalyzeResult } from "@/types/analyze";
 
 export function AnalyzeContent() {
     const { model } = useModelSelection();

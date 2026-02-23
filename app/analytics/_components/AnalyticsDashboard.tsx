@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { mockAnalyticsData } from "@/lib/mock-data";
+import { getAnalyticsData } from "../actions";
 import {
     FileText,
     DollarSign,
@@ -9,8 +9,8 @@ import {
     PieChart,
 } from "lucide-react";
 
-export function AnalyticsDashboard() {
-    const data = mockAnalyticsData;
+export async function AnalyticsDashboard() {
+    const data = await getAnalyticsData();
 
     return (
         <div className="space-y-6">
@@ -29,7 +29,7 @@ export function AnalyticsDashboard() {
                             {data.totalAnalyses.toLocaleString()}
                         </div>
                         <p className="text-xs text-muted-foreground">
-                            +{data.analysesThisMonth} this month
+                            {data.analysesThisMonth} this month
                         </p>
                     </CardContent>
                 </Card>
@@ -62,7 +62,7 @@ export function AnalyticsDashboard() {
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">
-                            ${data.averageCost.toFixed(3)}
+                            ${data.averageCost.toFixed(5)}
                         </div>
                         <p className="text-xs text-muted-foreground">
                             Per analysis request
@@ -82,7 +82,7 @@ export function AnalyticsDashboard() {
                         <div className="text-2xl font-bold">
                             {data.mostUsedModel}
                         </div>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-xs text-muted-foreground capitalize">
                             {data.mostUsedProvider}
                         </p>
                     </CardContent>
@@ -196,7 +196,7 @@ export function AnalyticsDashboard() {
                     </CardContent>
                 </Card>
 
-                {/* Provider Distribution */}
+                {/* Quick Stats */}
                 <Card className="gap-2">
                     <CardHeader>
                         <CardTitle className="text-base flex items-center gap-2">
@@ -211,7 +211,7 @@ export function AnalyticsDashboard() {
                                     Analyses Today
                                 </span>
                                 <span className="text-sm font-semibold">
-                                    12
+                                    {data.analysesToday}
                                 </span>
                             </div>
                             <div className="flex justify-between items-center py-2 border-b">
@@ -219,15 +219,7 @@ export function AnalyticsDashboard() {
                                     Avg. Response Time
                                 </span>
                                 <span className="text-sm font-semibold">
-                                    2.8s
-                                </span>
-                            </div>
-                            <div className="flex justify-between items-center py-2 border-b">
-                                <span className="text-sm text-muted-foreground">
-                                    Success Rate
-                                </span>
-                                <span className="text-sm font-semibold">
-                                    98.5%
+                                    {data.avgLatency.toFixed(2)}s
                                 </span>
                             </div>
                             <div className="flex justify-between items-center py-2 border-b">
@@ -235,15 +227,25 @@ export function AnalyticsDashboard() {
                                     Avg. Tokens/Request
                                 </span>
                                 <span className="text-sm font-semibold">
-                                    3,847
+                                    {Math.round(
+                                        data.avgTokensPerRequest,
+                                    ).toLocaleString()}
+                                </span>
+                            </div>
+                            <div className="flex justify-between items-center py-2 border-b">
+                                <span className="text-sm text-muted-foreground">
+                                    This Month Analyses
+                                </span>
+                                <span className="text-sm font-semibold">
+                                    {data.analysesThisMonth}
                                 </span>
                             </div>
                             <div className="flex justify-between items-center py-2">
                                 <span className="text-sm text-muted-foreground">
-                                    Active Users
+                                    This Month Cost
                                 </span>
                                 <span className="text-sm font-semibold">
-                                    24
+                                    ${data.costThisMonth.toFixed(5)}
                                 </span>
                             </div>
                         </div>
