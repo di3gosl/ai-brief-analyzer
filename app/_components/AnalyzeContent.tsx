@@ -1,32 +1,73 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Send } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { MetricsPanel } from "./MetricsPanel";
-import { AnalysisResults } from "../../components/AnalysisResults";
-import { mockMetrics, sampleBrief } from "@/lib/mock-data";
+import { sampleBrief } from "@/lib/mock-data";
+import { useModelSelection } from "@/lib/model-context";
+import { analyzeBrief, type AnalyzeResult } from "@/app/actions/analyze";
+import { getModelConfig } from "@/lib/models";
+
+type Status = "idle" | "running" | "success" | "error";
 
 export function AnalyzeContent() {
+    const { model } = useModelSelection();
     const [brief, setBrief] = useState(sampleBrief);
-    const [hasAnalyzed, setHasAnalyzed] = useState(true);
-    const [status, setStatus] = useState<
-        "idle" | "running" | "success" | "error"
-    >("success");
+    const [hasAnalyzed, setHasAnalyzed] = useState(false);
+    const [resultText, setResultText] = useState("");
+    const [metrics, setMetrics] = useState({
+        inputTokens: 0,
+        outputTokens: 0,
+        totalTokens: 0,
+        estimatedCost: 0,
+        latency: 0,
+    });
+    const [status, setStatus] = useState<Status>("idle");
+    const [isPending, startTransition] = useTransition();
 
     const handleAnalyze = () => {
-        if (!brief.trim()) return;
+        if (!brief.trim()) {
+            return;
+        }
 
-        // Simulate analysis
         setStatus("running");
         setHasAnalyzed(false);
+        setResultText("");
 
-        setTimeout(() => {
+        startTransition(async () => {
+            const result = await analyzeBrief(brief, model);
+
+            if ("error" in result) {
+                setStatus("error");
+                toast.error("Analysis failed", {
+                    description: result.error,
+                });
+                return;
+            }
+
+            const data = result as AnalyzeResult;
+
+            setResultText(data.text);
+            setMetrics({
+                inputTokens: data.inputTokens,
+                outputTokens: data.outputTokens,
+                totalTokens: data.totalTokens,
+                estimatedCost: data.estimatedCost,
+                latency: data.latency,
+            });
             setStatus("success");
             setHasAnalyzed(true);
-        }, 1500);
+            toast.success("Analysis complete", {
+                description: `Generated with ${getModelConfig(data.model)?.displayName ?? data.model} in ${data.latency.toFixed(2)}s`,
+            });
+        });
     };
+
+    const isRunning = status === "running" || isPending;
+    const modelDisplay = getModelConfig(model)?.displayName ?? model;
 
     return (
         <div className="flex flex-col lg:flex-row gap-6">
@@ -46,7 +87,7 @@ export function AnalyzeContent() {
 
                     <Textarea
                         placeholder="Paste your project brief here..."
-                        className="min-h-75 resize-y font-mono text-sm"
+                        className={`resize-y font-mono text-sm transition-all duration-500 ${hasAnalyzed ? "min-h-20" : "min-h-75"}`}
                         value={brief}
                         onChange={(e) => setBrief(e.target.value)}
                     />
@@ -57,9 +98,9 @@ export function AnalyzeContent() {
                         </p>
                         <Button
                             onClick={handleAnalyze}
-                            disabled={!brief.trim() || status === "running"}
+                            disabled={!brief.trim() || isRunning}
                         >
-                            {status === "running" ? (
+                            {isRunning ? (
                                 <>
                                     <span className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
                                     Analyzing...
@@ -74,18 +115,22 @@ export function AnalyzeContent() {
                     </div>
                 </div>
 
-                {/* Analysis Results */}
-                {hasAnalyzed && (
+                {/* Analysis Results – plain text for now */}
+                {hasAnalyzed && resultText && (
                     <div className="space-y-4">
                         <div className="flex items-center justify-between">
                             <h2 className="text-lg font-semibold">
                                 Analysis Results
                             </h2>
                             <p className="text-xs text-muted-foreground">
-                                Generated with GPT-4o
+                                Generated with {modelDisplay}
                             </p>
                         </div>
-                        <AnalysisResults />
+                        <div className="rounded-lg border bg-card p-6">
+                            <pre className="whitespace-pre-wrap text-sm leading-relaxed font-sans">
+                                {resultText}
+                            </pre>
+                        </div>
                     </div>
                 )}
             </div>
@@ -97,16 +142,12 @@ export function AnalyzeContent() {
                         Metrics
                     </h3>
                     <MetricsPanel
-                        inputTokens={hasAnalyzed ? mockMetrics.inputTokens : 0}
-                        outputTokens={
-                            hasAnalyzed ? mockMetrics.outputTokens : 0
-                        }
-                        totalTokens={hasAnalyzed ? mockMetrics.totalTokens : 0}
-                        estimatedCost={
-                            hasAnalyzed ? mockMetrics.estimatedCost : 0
-                        }
-                        latency={hasAnalyzed ? mockMetrics.latency : 0}
-                        status={status}
+                        inputTokens={metrics.inputTokens}
+                        outputTokens={metrics.outputTokens}
+                        totalTokens={metrics.totalTokens}
+                        estimatedCost={metrics.estimatedCost}
+                        latency={metrics.latency}
+                        status={isRunning ? "running" : status}
                     />
                 </div>
             </div>

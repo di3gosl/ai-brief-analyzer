@@ -20,7 +20,13 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet";
-import { providers, modelsByProvider } from "@/lib/mock-data";
+import {
+    PROVIDERS,
+    MODELS_BY_PROVIDER,
+    estimateRequestCost,
+    type ProviderId,
+} from "@/lib/models";
+import { useModelSelection } from "@/lib/model-context";
 import { useState } from "react";
 import dynamic from "next/dynamic";
 
@@ -37,22 +43,19 @@ const navigation = [
 
 export function Header() {
     const pathname = usePathname();
-    const [selectedProvider, setSelectedProvider] = useState("openai");
-    const [selectedModel, setSelectedModel] = useState("gpt-4o");
+    const {
+        provider: selectedProvider,
+        model: selectedModel,
+        setProvider,
+        setModel,
+    } = useModelSelection();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-    const currentModels = modelsByProvider[selectedProvider] || [];
-    const currentModel = currentModels.find((m) => m.id === selectedModel);
-    const estimatedCost = currentModel
-        ? `~$${(currentModel.costPer1kTokens * 4).toFixed(4)}/req`
-        : "";
+    const currentModels = MODELS_BY_PROVIDER[selectedProvider] || [];
+    const estimatedCost = `~$${estimateRequestCost(selectedModel).toFixed(5)}/req`;
 
     const handleProviderChange = (value: string) => {
-        setSelectedProvider(value);
-        const newModels = modelsByProvider[value];
-        if (newModels && newModels.length > 0) {
-            setSelectedModel(newModels[0].id);
-        }
+        setProvider(value as ProviderId);
     };
 
     return (
@@ -112,7 +115,7 @@ export function Header() {
                             <SelectValue placeholder="Provider" />
                         </SelectTrigger>
                         <SelectContent>
-                            {providers.map((provider) => (
+                            {PROVIDERS.map((provider) => (
                                 <SelectItem
                                     key={provider.id}
                                     value={provider.id}
@@ -124,10 +127,7 @@ export function Header() {
                     </Select>
 
                     {/* Model Selector */}
-                    <Select
-                        value={selectedModel}
-                        onValueChange={setSelectedModel}
-                    >
+                    <Select value={selectedModel} onValueChange={setModel}>
                         <SelectTrigger
                             className="w-30 md:w-35 h-8 text-xs"
                             size="sm"

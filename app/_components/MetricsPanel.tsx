@@ -105,7 +105,7 @@ export function MetricsPanel({
                 </CardHeader>
                 <CardContent>
                     <div className="text-2xl font-semibold font-mono">
-                        ${estimatedCost.toFixed(4)}
+                        ${estimatedCost.toFixed(5)}
                     </div>
                     <p className="text-xs text-muted-foreground mt-1">
                         Based on current model pricing
