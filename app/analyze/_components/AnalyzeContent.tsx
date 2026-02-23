@@ -9,7 +9,7 @@ import { AnalysisResults } from "@/components/AnalysisResults";
 import { MetricsPanel } from "./MetricsPanel";
 import { sampleBrief } from "@/lib/mock-data";
 import { useModelSelection } from "@/lib/model-context";
-import { analyzeBrief } from "@/app/actions";
+import { analyzeBrief } from "@/app/analyze/actions";
 import { getModelConfig } from "@/lib/models";
 import type { BriefAnalysis } from "@/lib/schemas";
 import type { Status, AnalyzeResult } from "@/types/analyze";
