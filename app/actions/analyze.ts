@@ -1,8 +1,9 @@
 "use server";
 
-import { generateText } from "ai";
+import { generateText, Output } from "ai";
 import { getModelConfig, calculateCost } from "@/lib/models";
 import { BRIEF_ANALYSIS_SYSTEM_PROMPT } from "@/lib/prompts";
+import { briefAnalysisSchema, type BriefAnalysis } from "@/lib/schemas";
 import { openai } from "@ai-sdk/openai";
 import { anthropic } from "@ai-sdk/anthropic";
 import { google } from "@ai-sdk/google";
@@ -12,7 +13,7 @@ import { google } from "@ai-sdk/google";
  */
 
 export interface AnalyzeResult {
-    text: string;
+    analysis: BriefAnalysis;
     model: string;
     provider: string;
     inputTokens: number;
@@ -70,11 +71,18 @@ export async function analyzeBrief(
             return { error: "Failed to initialize model." };
         }
 
-        const { text, usage } = await generateText({
+        const { output, usage } = await generateText({
             model,
             system: BRIEF_ANALYSIS_SYSTEM_PROMPT,
             prompt: brief,
+            output: Output.object({
+                schema: briefAnalysisSchema,
+            }),
         });
+
+        if (!output) {
+            return { error: "Model returned empty output." };
+        }
 
         const endTime = performance.now();
         const latency = (endTime - startTime) / 1000; // ms → seconds
@@ -85,7 +93,7 @@ export async function analyzeBrief(
         const estimatedCost = calculateCost(modelId, inputTokens, outputTokens);
 
         return {
-            text,
+            analysis: output,
             model: modelId,
             provider: config.provider,
             inputTokens,

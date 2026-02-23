@@ -1,10 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { mockAnalysisResult } from "@/lib/mock-data";
+import type { BriefAnalysis } from "@/lib/schemas";
 
-export function AnalysisResults() {
-    const result = mockAnalysisResult;
+interface AnalysisResultsProps {
+    result: BriefAnalysis;
+}
 
+export function AnalysisResults({ result }: AnalysisResultsProps) {
     return (
         <div className="space-y-6">
             {/* Project Summary */}
@@ -25,7 +27,7 @@ export function AnalysisResults() {
             <Card className="gap-2">
                 <CardHeader>
                     <CardTitle className="text-lg">
-                        {result.functionalRequirements.title}
+                        Functional Requirements
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -53,7 +55,7 @@ export function AnalysisResults() {
             <Card className="gap-2">
                 <CardHeader>
                     <CardTitle className="text-lg">
-                        {result.mvpVsNiceToHave.title}
+                        MVP vs Nice-to-Have
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -108,7 +110,7 @@ export function AnalysisResults() {
             <Card className="gap-2">
                 <CardHeader>
                     <CardTitle className="text-lg">
-                        {result.technicalStack.title}
+                        Suggested Technical Stack
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -143,7 +145,7 @@ export function AnalysisResults() {
             <Card className="gap-2">
                 <CardHeader>
                     <CardTitle className="text-lg">
-                        {result.risksAndAssumptions.title}
+                        Risks & Assumptions
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -168,7 +170,7 @@ export function AnalysisResults() {
                                                           ? "secondary"
                                                           : "default"
                                                 }
-                                                className="shrink-0 capitalize"
+                                                className="shrink-0 capitalize w-16"
                                             >
                                                 {risk.level}
                                             </Badge>
@@ -206,7 +208,7 @@ export function AnalysisResults() {
             <Card className="gap-2">
                 <CardHeader>
                     <CardTitle className="text-lg">
-                        {result.missingInformation.title}
+                        Missing Information & Questions
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -233,9 +235,7 @@ export function AnalysisResults() {
             {/* Rough Estimation */}
             <Card className="gap-2">
                 <CardHeader>
-                    <CardTitle className="text-lg">
-                        {result.roughEstimation.title}
-                    </CardTitle>
+                    <CardTitle className="text-lg">Rough Estimation</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                     {/* Phases Table */}

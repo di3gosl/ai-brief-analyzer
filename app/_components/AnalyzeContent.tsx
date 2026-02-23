@@ -5,11 +5,13 @@ import { Send } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { AnalysisResults } from "@/components/AnalysisResults";
 import { MetricsPanel } from "./MetricsPanel";
 import { sampleBrief } from "@/lib/mock-data";
 import { useModelSelection } from "@/lib/model-context";
 import { analyzeBrief, type AnalyzeResult } from "@/app/actions/analyze";
 import { getModelConfig } from "@/lib/models";
+import type { BriefAnalysis } from "@/lib/schemas";
 
 type Status = "idle" | "running" | "success" | "error";
 
@@ -17,7 +19,7 @@ export function AnalyzeContent() {
     const { model } = useModelSelection();
     const [brief, setBrief] = useState(sampleBrief);
     const [hasAnalyzed, setHasAnalyzed] = useState(false);
-    const [resultText, setResultText] = useState("");
+    const [analysis, setAnalysis] = useState<BriefAnalysis | null>(null);
     const [metrics, setMetrics] = useState({
         inputTokens: 0,
         outputTokens: 0,
@@ -35,7 +37,7 @@ export function AnalyzeContent() {
 
         setStatus("running");
         setHasAnalyzed(false);
-        setResultText("");
+        setAnalysis(null);
 
         startTransition(async () => {
             const result = await analyzeBrief(brief, model);
@@ -50,7 +52,7 @@ export function AnalyzeContent() {
 
             const data = result as AnalyzeResult;
 
-            setResultText(data.text);
+            setAnalysis(data.analysis);
             setMetrics({
                 inputTokens: data.inputTokens,
                 outputTokens: data.outputTokens,
@@ -115,8 +117,8 @@ export function AnalyzeContent() {
                     </div>
                 </div>
 
-                {/* Analysis Results – plain text for now */}
-                {hasAnalyzed && resultText && (
+                {/* Analysis Results – structured output */}
+                {hasAnalyzed && analysis && (
                     <div className="space-y-4">
                         <div className="flex items-center justify-between">
                             <h2 className="text-lg font-semibold">
@@ -126,11 +128,7 @@ export function AnalyzeContent() {
                                 Generated with {modelDisplay}
                             </p>
                         </div>
-                        <div className="rounded-lg border bg-card p-6">
-                            <pre className="whitespace-pre-wrap text-sm leading-relaxed font-sans">
-                                {resultText}
-                            </pre>
-                        </div>
+                        <AnalysisResults result={analysis} />
                     </div>
                 )}
             </div>
