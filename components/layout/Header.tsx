@@ -38,7 +38,7 @@ const MobileThemeSelect = dynamic(() => import("./MobileThemeSelect"), {
 const navigation = [
     { name: "Analyze", href: "/", icon: FileText },
     { name: "History", href: "/history", icon: History },
-    { name: "Usage", href: "/analytics", icon: BarChart3 },
+    { name: "Usage", href: "/usage", icon: BarChart3 },
 ];
 
 export function Header() {
