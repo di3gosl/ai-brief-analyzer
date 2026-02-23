@@ -6,14 +6,8 @@ import { AnalysisResults } from "../../../components/AnalysisResults";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { mockHistoryItems } from "@/lib/mock-data";
 import { formatDate } from "@/lib/date-utils";
-
-export function generateStaticParams() {
-    return mockHistoryItems.map((item) => ({
-        id: item.id,
-    }));
-}
+import { getAnalysis } from "./actions";
 
 interface Props {
     params: Promise<{ id: string }>;
@@ -21,7 +15,7 @@ interface Props {
 
 export default async function HistoryDetailPage({ params }: Props) {
     const { id } = await params;
-    const item = mockHistoryItems.find((h) => h.id === id);
+    const item = await getAnalysis(id);
 
     if (!item) {
         notFound();
@@ -35,7 +29,11 @@ export default async function HistoryDetailPage({ params }: Props) {
                     {/* Back Button and Title */}
                     <div className="space-y-4">
                         <Link href="/history">
-                            <Button variant="ghost" size="sm" className="gap-2 mb-4">
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="gap-2 mb-4"
+                            >
                                 <ArrowLeft className="h-4 w-4" />
                                 Back to History
                             </Button>
@@ -123,7 +121,7 @@ export default async function HistoryDetailPage({ params }: Props) {
                         <h2 className="text-lg font-semibold">
                             Analysis Results
                         </h2>
-                        <AnalysisResults />
+                        <AnalysisResults result={item} />
                     </div>
                 </div>
             </main>

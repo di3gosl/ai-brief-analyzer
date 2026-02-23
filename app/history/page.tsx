@@ -1,7 +1,10 @@
 import { Header } from "@/components/layout/Header";
 import { HistoryList } from "./_components/HistoryList";
+import { getHistory } from "./actions";
 
-export default function HistoryPage() {
+export default async function HistoryPage() {
+    const items = await getHistory();
+
     return (
         <div className="min-h-screen bg-background">
             <Header />
@@ -15,7 +18,7 @@ export default function HistoryPage() {
                             View and manage your previous brief analyses
                         </p>
                     </div>
-                    <HistoryList />
+                    <HistoryList items={items} />
                 </div>
             </main>
         </div>

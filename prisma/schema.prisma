@@ -11,11 +11,12 @@ datasource db {
 // ──────────────────────────────────────────────
 
 model Analysis {
-  id       String @id @default(cuid())
-  brief    String @db.Text // the full project brief the user entered
-  title    String @default("") // denormalised from projectSummary for quick listing
-  model    String // e.g. "gpt-4o", "claude-3-5-sonnet"
-  provider String // e.g. "openai", "anthropic", "google"
+  id        String  @id @default(cuid())
+  brief     String  @db.Text // the full project brief the user entered
+  title     String  @default("") // denormalised from projectSummary for quick listing
+  model     String // e.g. "gpt-4o", "claude-3-5-sonnet"
+  modelName String? // e.g. "GPT-4o", "Claude 3.5 Sonnet"
+  provider  String // e.g. "openai", "anthropic", "google"
 
   // Token / cost metrics
   inputTokens   Int   @default(0)

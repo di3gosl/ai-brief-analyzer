@@ -2,15 +2,31 @@
 
 import Link from "next/link";
 import { formatDistanceToNow } from "@/lib/date-utils";
-import { mockHistoryItems } from "@/lib/mock-data";
+import type { HistoryItem } from "@/types/history";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FileText, ChevronRight } from "lucide-react";
 
-export function HistoryList() {
+interface HistoryListProps {
+    items: HistoryItem[];
+}
+
+export function HistoryList({ items }: HistoryListProps) {
+    if (items.length === 0) {
+        return (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+                <FileText className="h-10 w-10 text-muted-foreground mb-4" />
+                <p className="text-sm font-medium">No analyses yet</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                    Run your first brief analysis to see it here.
+                </p>
+            </div>
+        );
+    }
+
     return (
         <div className="space-y-4">
-            {mockHistoryItems.map((item) => (
+            {items.map((item) => (
                 <Link
                     key={item.id}
                     href={`/history/${item.id}`}
@@ -34,9 +50,9 @@ export function HistoryList() {
                                             variant="outline"
                                             className="text-xs font-normal"
                                         >
-                                            {item.model}
+                                            {item.modelName || item.model}
                                         </Badge>
-                                        <span className="text-xs text-muted-foreground">
+                                        <span className="text-xs text-muted-foreground capitalize">
                                             {item.provider}
                                         </span>
                                     </div>
