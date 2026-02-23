@@ -7,12 +7,14 @@ import { briefAnalysisSchema, type BriefAnalysis } from "@/lib/schemas";
 import { openai } from "@ai-sdk/openai";
 import { anthropic } from "@ai-sdk/anthropic";
 import { google } from "@ai-sdk/google";
+import prisma from "@/lib/prisma";
 
 /**
  * Types
  */
 
 export interface AnalyzeResult {
+    analysisId: string;
     analysis: BriefAnalysis;
     model: string;
     provider: string;
@@ -92,7 +94,110 @@ export async function analyzeBrief(
         const totalTokens = inputTokens + outputTokens;
         const estimatedCost = calculateCost(modelId, inputTokens, outputTokens);
 
+        // Persist the analysis to the database
+        const saved = await prisma.analysis.create({
+            data: {
+                brief,
+                title: output.projectSummary.title,
+                model: modelId,
+                provider: config.provider,
+                inputTokens,
+                outputTokens,
+                totalTokens,
+                estimatedCost,
+                latency,
+
+                projectSummary: {
+                    create: { content: output.projectSummary.content },
+                },
+
+                functionalRequirements: {
+                    create: output.functionalRequirements.items.map(
+                        (item, idx) => ({ content: item, sortOrder: idx }),
+                    ),
+                },
+
+                mvpItems: {
+                    create: output.mvpVsNiceToHave.mvp.map((item, idx) => ({
+                        content: item,
+                        sortOrder: idx,
+                    })),
+                },
+
+                niceToHaveItems: {
+                    create: output.mvpVsNiceToHave.niceToHave.map(
+                        (item, idx) => ({ content: item, sortOrder: idx }),
+                    ),
+                },
+
+                techStackCategories: {
+                    create: output.technicalStack.categories.map(
+                        (cat, catIdx) => ({
+                            name: cat.name,
+                            sortOrder: catIdx,
+                            items: {
+                                create: cat.items.map((item, itemIdx) => ({
+                                    name: item,
+                                    sortOrder: itemIdx,
+                                })),
+                            },
+                        }),
+                    ),
+                },
+
+                risks: {
+                    create: output.risksAndAssumptions.risks.map(
+                        (risk, idx) => ({
+                            level: risk.level.toUpperCase() as
+                                | "LOW"
+                                | "MEDIUM"
+                                | "HIGH",
+                            description: risk.description,
+                            sortOrder: idx,
+                        }),
+                    ),
+                },
+
+                assumptions: {
+                    create: output.risksAndAssumptions.assumptions.map(
+                        (item, idx) => ({ content: item, sortOrder: idx }),
+                    ),
+                },
+
+                missingQuestions: {
+                    create: output.missingInformation.questions.map(
+                        (item, idx) => ({ content: item, sortOrder: idx }),
+                    ),
+                },
+
+                estimationSummary: {
+                    create: {
+                        totalDuration: output.roughEstimation.totalDuration,
+                        totalEffort: output.roughEstimation.totalEffort,
+                        teamSize: output.roughEstimation.teamSize,
+                    },
+                },
+
+                estimationPhases: {
+                    create: output.roughEstimation.phases.map((phase, idx) => ({
+                        name: phase.name,
+                        duration: phase.duration,
+                        effort: phase.effort,
+                        sortOrder: idx,
+                    })),
+                },
+
+                estimationCaveats: {
+                    create: output.roughEstimation.caveats.map((item, idx) => ({
+                        content: item,
+                        sortOrder: idx,
+                    })),
+                },
+            },
+        });
+
         return {
+            analysisId: saved.id,
             analysis: output,
             model: modelId,
             provider: config.provider,

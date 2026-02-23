@@ -136,9 +136,12 @@ export function AnalyzeContent() {
             {/* Metrics Panel - Right Column */}
             <div className="w-full lg:w-72 shrink-0">
                 <div className="sticky top-20">
-                    <h3 className="text-sm font-medium mb-4 text-muted-foreground">
-                        Metrics
-                    </h3>
+                    <h3 className="text-sm font-medium mb-4">Prompt Metrics</h3>
+                    <div className="text-sm text-muted-foreground">
+                        Information about token usage, estimated cost, and
+                        latency for the current analysis.
+                    </div>
+                    <div className="my-4 border-t"></div>
                     <MetricsPanel
                         inputTokens={metrics.inputTokens}
                         outputTokens={metrics.outputTokens}

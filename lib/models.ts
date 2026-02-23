@@ -102,26 +102,26 @@ export const MODEL_CONFIGS: Record<ProviderId, ProviderConfig> = {
     anthropic: {
         displayName: "Anthropic",
         models: {
-            "claude-3-5-haiku-20241022": {
-                displayName: "Claude 3.5 Haiku",
+            "claude-sonnet-4-6": {
+                displayName: "Claude 4.6 Sonnet",
                 context: {
                     size: 200_000,
                     displayName: "200K tokens",
                 },
                 pricing: {
-                    inputPerToken: 0.8 / 1_000_000,
-                    outputPerToken: 4 / 1_000_000,
+                    inputPerToken: 3 / 1_000_000,
+                    outputPerToken: 15 / 1_000_000,
                 },
             },
-            "claude-3-haiku-20240307": {
-                displayName: "Claude 3 Haiku",
+            "claude-haiku-4-5-20251001": {
+                displayName: "Claude 4.5 Haiku",
                 context: {
                     size: 200_000,
                     displayName: "200K tokens",
                 },
                 pricing: {
-                    inputPerToken: 0.25 / 1_000_000,
-                    outputPerToken: 1.25 / 1_000_000,
+                    inputPerToken: 1 / 1_000_000,
+                    outputPerToken: 5 / 1_000_000,
                 },
             },
         },
