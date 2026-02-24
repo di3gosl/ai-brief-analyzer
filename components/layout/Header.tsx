@@ -128,7 +128,7 @@ export function Header() {
                     {/* Model Selector */}
                     <Select value={selectedModel} onValueChange={setModel}>
                         <SelectTrigger
-                            className="w-30 md:w-35 h-8 text-xs"
+                            className="w-30 md:w-38 h-8 text-xs"
                             size="sm"
                         >
                             <SelectValue placeholder="Model" />
