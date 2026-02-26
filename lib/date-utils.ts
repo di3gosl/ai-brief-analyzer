@@ -32,7 +32,5 @@ export function formatDate(date: Date): string {
         month: "long",
         day: "numeric",
         year: "numeric",
-        hour: "numeric",
-        minute: "2-digit",
     });
 }

@@ -12,6 +12,7 @@ import { getAuthUserId } from "@/lib/supabase/actions";
 export type AnalysisDetail = BriefAnalysis & {
     title: string;
     model: string;
+    modelName: string | null;
     provider: string;
     date: string;
     cost: number;
@@ -50,6 +51,7 @@ export async function getAnalysis(id: string): Promise<AnalysisDetail | null> {
         // meta fields
         title: row.title,
         model: row.model,
+        modelName: row.modelName,
         provider: row.provider,
         date: row.createdAt.toISOString(),
         cost: row.estimatedCost,

@@ -3,6 +3,7 @@
 import prisma from "@/lib/prisma";
 import type { HistoryItem } from "@/types/history";
 import { getAuthUserId } from "@/lib/supabase/actions";
+import { MAX_HISTORY_ITEMS } from "@/lib/constants";
 
 export async function getHistory(): Promise<HistoryItem[]> {
     const userId = await getAuthUserId();
@@ -10,6 +11,7 @@ export async function getHistory(): Promise<HistoryItem[]> {
     const rows = await prisma.analysis.findMany({
         where: { userId },
         orderBy: { createdAt: "desc" },
+        take: MAX_HISTORY_ITEMS,
         select: {
             id: true,
             title: true,

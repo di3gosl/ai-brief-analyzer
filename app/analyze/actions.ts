@@ -10,6 +10,21 @@ import { google } from "@ai-sdk/google";
 import type { AnalyzeResult, AnalyzeError } from "@/types/analyze";
 import prisma from "@/lib/prisma";
 import { getAuthUserId } from "@/lib/supabase/actions";
+import { MAX_ANALYSES_PER_DAY, MAX_BRIEF_CHARACTERS } from "@/lib/constants";
+
+/** Count how many analyses the current user has run today. */
+export async function getAnalysesTodayCount(): Promise<number> {
+    const userId = await getAuthUserId();
+    const now = new Date();
+    const startOfToday = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+    );
+    return prisma.analysis.count({
+        where: { userId, createdAt: { gte: startOfToday } },
+    });
+}
 
 export async function analyzeBrief(
     brief: string,
@@ -19,6 +34,20 @@ export async function analyzeBrief(
     // Validate inputs
     if (!brief.trim()) {
         return { error: "Brief cannot be empty." };
+    }
+
+    if (brief.length > MAX_BRIEF_CHARACTERS) {
+        return {
+            error: `Brief exceeds the ${MAX_BRIEF_CHARACTERS.toLocaleString()} character limit (${brief.length.toLocaleString()} characters).`,
+        };
+    }
+
+    // Enforce daily analysis limit
+    const todayCount = await getAnalysesTodayCount();
+    if (todayCount >= MAX_ANALYSES_PER_DAY) {
+        return {
+            error: `You've reached the daily limit of ${MAX_ANALYSES_PER_DAY} analyses. Try again tomorrow.`,
+        };
     }
 
     const config = getModelConfig(modelId);
