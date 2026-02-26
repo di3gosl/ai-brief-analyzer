@@ -214,6 +214,7 @@ export async function analyzeBrief(
             analysisId: saved.id,
             analysis: output,
             model: modelId,
+            modelName: config.displayName,
             provider: config.provider,
             inputTokens,
             outputTokens,

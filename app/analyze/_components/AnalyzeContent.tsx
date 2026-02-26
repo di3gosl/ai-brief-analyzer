@@ -48,6 +48,7 @@ export function AnalyzeContent() {
         totalTokens: 0,
         estimatedCost: 0,
         latency: 0,
+        modelName: "",
     });
     const [status, setStatus] = useState<Status>("idle");
     const [isPending, startTransition] = useTransition();
@@ -93,6 +94,7 @@ export function AnalyzeContent() {
                 totalTokens: data.totalTokens,
                 estimatedCost: data.estimatedCost,
                 latency: data.latency,
+                modelName: data.modelName,
             });
             setStatus("success");
             setHasAnalyzed(true);
@@ -105,7 +107,6 @@ export function AnalyzeContent() {
     };
 
     const isRunning = status === "running" || isPending;
-    const modelDisplay = getModelConfig(model)?.displayName ?? model;
 
     return (
         <div className="flex flex-col lg:flex-row gap-6">
@@ -232,7 +233,8 @@ export function AnalyzeContent() {
                                 Analysis Results
                             </h2>
                             <p className="text-xs text-muted-foreground">
-                                Generated with {modelDisplay}
+                                Generated with {metrics.modelName} in{" "}
+                                {metrics.latency.toFixed(2)}s
                             </p>
                         </div>
                         <AnalysisResults result={analysis} />
