@@ -9,11 +9,13 @@ import { anthropic } from "@ai-sdk/anthropic";
 import { google } from "@ai-sdk/google";
 import type { AnalyzeResult, AnalyzeError } from "@/types/analyze";
 import prisma from "@/lib/prisma";
+import { getAuthUserId } from "@/lib/supabase/actions";
 
 export async function analyzeBrief(
     brief: string,
     modelId: string,
 ): Promise<AnalyzeResult | AnalyzeError> {
+    const userId = await getAuthUserId();
     // Validate inputs
     if (!brief.trim()) {
         return { error: "Brief cannot be empty." };
@@ -78,6 +80,7 @@ export async function analyzeBrief(
         // Persist the analysis to the database
         const saved = await prisma.analysis.create({
             data: {
+                userId,
                 brief,
                 title: output.projectSummary.title,
                 model: modelId,

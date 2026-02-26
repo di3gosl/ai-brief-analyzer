@@ -2,17 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FileText, History, BarChart3, DollarSign, Menu } from "lucide-react";
+import { FileText, History, BarChart3, Menu, LogOut, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 import {
     Sheet,
     SheetContent,
@@ -20,15 +12,11 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet";
-import {
-    PROVIDERS,
-    MODELS_BY_PROVIDER,
-    estimateRequestCost,
-} from "@/lib/models";
-import { useModelSelection } from "@/lib/model-context";
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import type { ProviderId } from "@/types/models";
+import { signOut } from "@/lib/supabase/actions";
+import { createClient } from "@/lib/supabase/client";
 
 const ThemeSelect = dynamic(() => import("./ThemeSelect"), { ssr: false });
 const MobileThemeSelect = dynamic(() => import("./MobileThemeSelect"), {
@@ -43,20 +31,15 @@ const navigation = [
 
 export function Header() {
     const pathname = usePathname();
-    const {
-        provider: selectedProvider,
-        model: selectedModel,
-        setProvider,
-        setModel,
-    } = useModelSelection();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [userEmail, setUserEmail] = useState<string | null>(null);
 
-    const currentModels = MODELS_BY_PROVIDER[selectedProvider] || [];
-    const estimatedCost = `~$${estimateRequestCost(selectedModel).toFixed(5)}/req`;
-
-    const handleProviderChange = (value: string) => {
-        setProvider(value as ProviderId);
-    };
+    useEffect(() => {
+        const supabase = createClient();
+        supabase.auth.getUser().then(({ data }) => {
+            setUserEmail(data.user?.email ?? null);
+        });
+    }, []);
 
     return (
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
@@ -100,59 +83,31 @@ export function Header() {
                 {/* Spacer */}
                 <div className="flex-1" />
 
-                {/* Theme Selector, Model Selector and Cost Badge */}
+                {/* Theme Selector and User Controls */}
                 <div className="flex items-center gap-2">
-                    {/* Provider Selector */}
-                    <Select
-                        value={selectedProvider}
-                        onValueChange={handleProviderChange}
-                    >
-                        <SelectTrigger
-                            className="w-28 md:w-30 h-8 text-xs"
-                            size="sm"
-                        >
-                            <SelectValue placeholder="Provider" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {PROVIDERS.map((provider) => (
-                                <SelectItem
-                                    key={provider.id}
-                                    value={provider.id}
-                                >
-                                    {provider.name}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-
-                    {/* Model Selector */}
-                    <Select value={selectedModel} onValueChange={setModel}>
-                        <SelectTrigger
-                            className="w-30 md:w-38 h-8 text-xs"
-                            size="sm"
-                        >
-                            <SelectValue placeholder="Model" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {currentModels.map((model) => (
-                                <SelectItem key={model.id} value={model.id}>
-                                    {model.name}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-
-                    {/* Estimated Cost Badge */}
-                    <Badge
-                        variant="outline"
-                        className="hidden md:flex gap-1 text-xs font-normal text-muted-foreground"
-                    >
-                        <DollarSign className="h-3 w-3" />
-                        {estimatedCost}
-                    </Badge>
-
                     {/* Theme Selector - Desktop */}
                     <ThemeSelect />
+
+                    {/* User Email - Desktop */}
+                    {userEmail && (
+                        <div className="hidden md:flex items-center gap-1.5 text-xs text-muted-foreground max-w-36 border-l pl-3">
+                            <User className="h-3.5 w-3.5 shrink-0" />
+                            <span className="truncate">{userEmail}</span>
+                        </div>
+                    )}
+
+                    {/* Sign Out - Desktop */}
+                    <form action={signOut}>
+                        <Button
+                            type="submit"
+                            variant="ghost"
+                            size="sm"
+                            className="hidden md:flex gap-2 text-muted-foreground hover:text-foreground"
+                        >
+                            <LogOut className="h-4 w-4" />
+                            <span>Sign out</span>
+                        </Button>
+                    </form>
 
                     {/* Mobile Menu */}
                     <Sheet
@@ -170,12 +125,23 @@ export function Header() {
                                 <SheetTitle>Menu</SheetTitle>
                             </SheetHeader>
                             <div className="flex flex-col gap-4 mt-6">
+                                {/* User Email - Mobile */}
+                                {userEmail && (
+                                    <div className="flex items-center gap-2 px-4 py-2 border-b">
+                                        <User className="h-4 w-4 text-muted-foreground shrink-0" />
+                                        <span className="text-sm text-muted-foreground truncate">
+                                            {userEmail}
+                                        </span>
+                                    </div>
+                                )}
                                 {/* Navigation Links */}
                                 <nav className="flex flex-col gap-2">
                                     {navigation.map((item) => {
                                         const isActive =
                                             pathname === item.href ||
-                                            pathname.startsWith(item.href + "/");
+                                            pathname.startsWith(
+                                                item.href + "/",
+                                            );
                                         return (
                                             <Link
                                                 key={item.name}
@@ -211,6 +177,21 @@ export function Header() {
                                         Theme
                                     </label>
                                     <MobileThemeSelect />
+                                </div>
+
+                                {/* Sign Out */}
+                                <div className="border-t p-4">
+                                    <form action={signOut}>
+                                        <Button
+                                            type="submit"
+                                            variant="ghost"
+                                            size="sm"
+                                            className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground"
+                                        >
+                                            <LogOut className="h-4 w-4" />
+                                            Sign out
+                                        </Button>
+                                    </form>
                                 </div>
                             </div>
                         </SheetContent>

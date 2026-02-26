@@ -12,6 +12,7 @@ datasource db {
 
 model Analysis {
   id        String  @id @default(cuid())
+  userId    String? // Supabase auth user id (nullable for pre-existing analyses)
   brief     String  @db.Text // the full project brief the user entered
   title     String  @default("") // denormalised from projectSummary for quick listing
   model     String // e.g. "gpt-4o", "claude-3-5-sonnet"
@@ -43,6 +44,7 @@ model Analysis {
 
   @@index([createdAt(sort: Desc)])
   @@index([provider, model])
+  @@index([userId])
 }
 
 // ──────────────────────────────────────────────
