@@ -1,21 +1,43 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Send } from "lucide-react";
+import { Send, DollarSign } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { AnalysisResults } from "@/components/AnalysisResults";
 import { MetricsPanel } from "./MetricsPanel";
 import { sampleBrief } from "@/lib/mock-data";
 import { useModelSelection } from "@/lib/model-context";
 import { analyzeBrief } from "@/app/analyze/actions";
-import { getModelConfig } from "@/lib/models";
+import {
+    PROVIDERS,
+    MODELS_BY_PROVIDER,
+    estimateRequestCost,
+    getModelConfig,
+} from "@/lib/models";
 import type { BriefAnalysis } from "@/lib/schemas";
 import type { Status, AnalyzeResult } from "@/types/analyze";
+import type { ProviderId } from "@/types/models";
 
 export function AnalyzeContent() {
-    const { model } = useModelSelection();
+    const {
+        provider: selectedProvider,
+        model: selectedModel,
+        setProvider,
+        setModel,
+    } = useModelSelection();
+    const model = selectedModel;
+    const currentModels = MODELS_BY_PROVIDER[selectedProvider] || [];
+    const estimatedCost = `~$${estimateRequestCost(selectedModel).toFixed(5)}/req`;
     const [brief, setBrief] = useState(sampleBrief);
     const [hasAnalyzed, setHasAnalyzed] = useState(false);
     const [analysis, setAnalysis] = useState<BriefAnalysis | null>(null);
@@ -76,14 +98,64 @@ export function AnalyzeContent() {
             <div className="flex-1 min-w-0 space-y-6">
                 {/* Brief Input Section */}
                 <div className="space-y-4">
-                    <div>
-                        <h2 className="text-lg font-semibold mb-1">
-                            Project Brief
-                        </h2>
-                        <p className="text-sm text-muted-foreground">
-                            Paste your project brief below and click analyze to
-                            get a comprehensive breakdown.
-                        </p>
+                    <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+                        <div>
+                            <h2 className="text-lg font-semibold mb-1">
+                                Project Brief
+                            </h2>
+                            <p className="text-sm text-muted-foreground">
+                                Paste your project brief below and click analyze
+                                to get a comprehensive breakdown.
+                            </p>
+                        </div>
+                        {/* Model Controls */}
+                        <div className="flex items-center gap-2 shrink-0">
+                            <Select
+                                value={selectedProvider}
+                                onValueChange={(v) =>
+                                    setProvider(v as ProviderId)
+                                }
+                            >
+                                <SelectTrigger
+                                    className="w-28 h-8 text-xs"
+                                    size="sm"
+                                >
+                                    <SelectValue placeholder="Provider" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {PROVIDERS.map((p) => (
+                                        <SelectItem key={p.id} value={p.id}>
+                                            {p.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <Select
+                                value={selectedModel}
+                                onValueChange={setModel}
+                            >
+                                <SelectTrigger
+                                    className="w-36 h-8 text-xs"
+                                    size="sm"
+                                >
+                                    <SelectValue placeholder="Model" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {currentModels.map((m) => (
+                                        <SelectItem key={m.id} value={m.id}>
+                                            {m.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <Badge
+                                variant="outline"
+                                className="hidden sm:flex gap-1 text-xs font-normal text-muted-foreground"
+                            >
+                                <DollarSign className="h-3 w-3" />
+                                {estimatedCost}
+                            </Badge>
+                        </div>
                     </div>
 
                     <Textarea

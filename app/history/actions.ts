@@ -2,9 +2,13 @@
 
 import prisma from "@/lib/prisma";
 import type { HistoryItem } from "@/types/history";
+import { getAuthUserId } from "@/lib/supabase/actions";
 
 export async function getHistory(): Promise<HistoryItem[]> {
+    const userId = await getAuthUserId();
+
     const rows = await prisma.analysis.findMany({
+        where: { userId },
         orderBy: { createdAt: "desc" },
         select: {
             id: true,

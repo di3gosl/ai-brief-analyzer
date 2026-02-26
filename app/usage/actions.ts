@@ -1,6 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import { getAuthUserId } from "@/lib/supabase/actions";
 
 export type AnalyticsData = {
     totalAnalyses: number;
@@ -19,6 +20,8 @@ export type AnalyticsData = {
 };
 
 export async function getAnalyticsData(): Promise<AnalyticsData> {
+    const userId = await getAuthUserId();
+
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const startOfToday = new Date(
@@ -28,6 +31,7 @@ export async function getAnalyticsData(): Promise<AnalyticsData> {
     );
 
     const analyses = await prisma.analysis.findMany({
+        where: { userId },
         select: {
             createdAt: true,
             estimatedCost: true,

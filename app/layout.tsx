@@ -17,6 +17,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
     title: "AI Brief Analyzer",
     description: "Analyze briefs using AI technology",
+    robots: {
+        index: false,
+        follow: false,
+    },
 };
 
 export default function RootLayout({
@@ -35,9 +39,7 @@ export default function RootLayout({
                     enableSystem
                     disableTransitionOnChange
                 >
-                    <ModelSelectionProvider>
-                        {children}
-                    </ModelSelectionProvider>
+                    <ModelSelectionProvider>{children}</ModelSelectionProvider>
                 </ThemeProvider>
             </body>
         </html>

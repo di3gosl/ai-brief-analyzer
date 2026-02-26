@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/prisma";
 import type { BriefAnalysis } from "@/lib/schemas";
+import { getAuthUserId } from "@/lib/supabase/actions";
 
 /**
  * Combined type returned by getAnalysis.
@@ -19,8 +20,10 @@ export type AnalysisDetail = BriefAnalysis & {
 };
 
 export async function getAnalysis(id: string): Promise<AnalysisDetail | null> {
-    const row = await prisma.analysis.findUnique({
-        where: { id },
+    const userId = await getAuthUserId();
+
+    const row = await prisma.analysis.findFirst({
+        where: { id, userId },
         include: {
             projectSummary: true,
             functionalRequirements: { orderBy: { sortOrder: "asc" } },
