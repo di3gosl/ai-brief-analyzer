@@ -124,7 +124,7 @@ export function Header() {
                             <SheetHeader>
                                 <SheetTitle>Menu</SheetTitle>
                             </SheetHeader>
-                            <div className="flex flex-col gap-4 mt-6">
+                            <div className="flex flex-col gap-4">
                                 {/* User Email - Mobile */}
                                 {userEmail && (
                                     <div className="flex items-center gap-2 px-4 py-2 border-b">
