@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { Send, DollarSign } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -17,13 +17,14 @@ import { AnalysisResults } from "@/components/AnalysisResults";
 import { MetricsPanel } from "./MetricsPanel";
 import { sampleBrief } from "@/lib/mock-data";
 import { useModelSelection } from "@/lib/model-context";
-import { analyzeBrief } from "@/app/analyze/actions";
+import { analyzeBrief, getAnalysesTodayCount } from "@/app/analyze/actions";
 import {
     PROVIDERS,
     MODELS_BY_PROVIDER,
     estimateRequestCost,
     getModelConfig,
 } from "@/lib/models";
+import { MAX_ANALYSES_PER_DAY, MAX_BRIEF_CHARACTERS } from "@/lib/constants";
 import type { BriefAnalysis } from "@/lib/schemas";
 import type { Status, AnalyzeResult } from "@/types/analyze";
 import type { ProviderId } from "@/types/models";
@@ -47,12 +48,25 @@ export function AnalyzeContent() {
         totalTokens: 0,
         estimatedCost: 0,
         latency: 0,
+        modelName: "",
     });
     const [status, setStatus] = useState<Status>("idle");
     const [isPending, startTransition] = useTransition();
+    const [analysesToday, setAnalysesToday] = useState<number | null>(null);
+
+    const isOverCharLimit = brief.length > MAX_BRIEF_CHARACTERS;
+    const dailyLimitReached =
+        analysesToday !== null && analysesToday >= MAX_ANALYSES_PER_DAY;
+    const remainingAnalyses =
+        analysesToday !== null ? MAX_ANALYSES_PER_DAY - analysesToday : null;
+
+    // Fetch daily usage count on mount
+    useEffect(() => {
+        getAnalysesTodayCount().then(setAnalysesToday);
+    }, []);
 
     const handleAnalyze = () => {
-        if (!brief.trim()) {
+        if (!brief.trim() || isOverCharLimit || dailyLimitReached) {
             return;
         }
 
@@ -80,9 +94,12 @@ export function AnalyzeContent() {
                 totalTokens: data.totalTokens,
                 estimatedCost: data.estimatedCost,
                 latency: data.latency,
+                modelName: data.modelName,
             });
             setStatus("success");
             setHasAnalyzed(true);
+            // Refresh daily count after successful analysis
+            getAnalysesTodayCount().then(setAnalysesToday);
             toast.success("Analysis complete", {
                 description: `Generated with ${getModelConfig(data.model)?.displayName ?? data.model} in ${data.latency.toFixed(2)}s`,
             });
@@ -90,7 +107,6 @@ export function AnalyzeContent() {
     };
 
     const isRunning = status === "running" || isPending;
-    const modelDisplay = getModelConfig(model)?.displayName ?? model;
 
     return (
         <div className="flex flex-col lg:flex-row gap-6">
@@ -163,15 +179,36 @@ export function AnalyzeContent() {
                         className={`resize-y font-mono text-sm transition-all duration-500 ${hasAnalyzed ? "min-h-20" : "min-h-75"}`}
                         value={brief}
                         onChange={(e) => setBrief(e.target.value)}
+                        maxLength={MAX_BRIEF_CHARACTERS}
                     />
 
                     <div className="flex items-center justify-between">
-                        <p className="text-xs text-muted-foreground">
-                            {brief.length.toLocaleString()} characters
-                        </p>
+                        <div className="flex items-center gap-3">
+                            <p
+                                className={`text-xs ${isOverCharLimit ? "text-destructive font-medium" : "text-muted-foreground"}`}
+                            >
+                                {brief.length.toLocaleString()}/
+                                {MAX_BRIEF_CHARACTERS.toLocaleString()}{" "}
+                                characters
+                            </p>
+                            {remainingAnalyses !== null && (
+                                <p
+                                    className={`text-xs ${dailyLimitReached ? "text-destructive font-medium" : "text-muted-foreground"}`}
+                                >
+                                    {dailyLimitReached
+                                        ? "Daily limit reached"
+                                        : `${remainingAnalyses}/${MAX_ANALYSES_PER_DAY} analyses left today`}
+                                </p>
+                            )}
+                        </div>
                         <Button
                             onClick={handleAnalyze}
-                            disabled={!brief.trim() || isRunning}
+                            disabled={
+                                !brief.trim() ||
+                                isRunning ||
+                                isOverCharLimit ||
+                                dailyLimitReached
+                            }
                         >
                             {isRunning ? (
                                 <>
@@ -196,7 +233,8 @@ export function AnalyzeContent() {
                                 Analysis Results
                             </h2>
                             <p className="text-xs text-muted-foreground">
-                                Generated with {modelDisplay}
+                                Generated with {metrics.modelName} in{" "}
+                                {metrics.latency.toFixed(2)}s
                             </p>
                         </div>
                         <AnalysisResults result={analysis} />

@@ -6,6 +6,7 @@ export interface AnalyzeResult {
     analysisId: string;
     analysis: BriefAnalysis;
     model: string;
+    modelName: string;
     provider: string;
     inputTokens: number;
     outputTokens: number;

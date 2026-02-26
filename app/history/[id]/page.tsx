@@ -46,7 +46,7 @@ export default async function HistoryDetailPage({ params }: Props) {
                             <div className="flex flex-wrap items-center gap-3 mt-2">
                                 <Badge variant="outline" className="gap-1">
                                     <Cpu className="h-3 w-3" />
-                                    {item.model}
+                                    {item.modelName}
                                 </Badge>
                                 <span className="text-sm text-muted-foreground">
                                     {item.provider}

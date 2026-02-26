@@ -114,7 +114,7 @@ export default function LoginPage() {
                                     </h1>
                                     <p className="text-sm text-muted-foreground">
                                         Enter your email and we&apos;ll send you
-                                        a magic link to sign in — no password
+                                        a magic link to sign in, no password
                                         needed.
                                     </p>
                                 </div>
