@@ -1,6 +1,7 @@
 import { Header } from "@/components/layout/Header";
 import { HistoryList } from "./_components/HistoryList";
 import { getHistory } from "./actions";
+import { MAX_HISTORY_ITEMS } from "@/lib/constants";
 
 export default async function HistoryPage() {
     const items = await getHistory();
@@ -15,7 +16,8 @@ export default async function HistoryPage() {
                             Analysis History
                         </h1>
                         <p className="text-sm text-muted-foreground mt-1">
-                            View and manage your previous brief analyses
+                            Showing your {MAX_HISTORY_ITEMS} most recent
+                            analyses
                         </p>
                     </div>
                     <HistoryList items={items} />
