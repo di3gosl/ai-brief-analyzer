@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>Sign in to AI Brief Analyzer</title>
+    </head>
+    <body
+        style="
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f5;
+            font-family: Arial, Helvetica, sans-serif;
+        "
+    >
+        <table
+            role="presentation"
+            width="100%"
+            cellpadding="0"
+            cellspacing="0"
+            border="0"
+            style="background-color: #f2f2f5"
+        >
+            <tr>
+                <td align="center" style="padding: 40px 16px">
+                    <!-- Main card -->
+                    <table
+                        role="presentation"
+                        width="480"
+                        cellpadding="0"
+                        cellspacing="0"
+                        border="0"
+                        style="
+                            max-width: 480px;
+                            width: 100%;
+                            background-color: #ffffff;
+                            border: 1px solid #e5e5e5;
+                        "
+                    >
+                        <!-- Teal top bar -->
+                        <tr>
+                            <td
+                                style="
+                                    background-color: #0f766e;
+                                    height: 4px;
+                                    font-size: 0;
+                                    line-height: 0;
+                                "
+                            >
+                                &nbsp;
+                            </td>
+                        </tr>
+                        <!-- Header -->
+                        <tr>
+                            <td
+                                style="padding: 32px 40px 0; text-align: center"
+                            >
+                                <h1
+                                    style="
+                                        margin: 0;
+                                        font-size: 20px;
+                                        font-weight: bold;
+                                        color: #0f766e;
+                                    "
+                                >
+                                    AI Brief Analyzer
+                                </h1>
+                            </td>
+                        </tr>
+                        <!-- Body -->
+                        <tr>
+                            <td style="padding: 28px 40px 0">
+                                <h2
+                                    style="
+                                        margin: 0 0 10px;
+                                        font-size: 18px;
+                                        font-weight: bold;
+                                        color: #1a1a1a;
+                                    "
+                                >
+                                    Sign in to your account
+                                </h2>
+                                <p
+                                    style="
+                                        margin: 0 0 24px;
+                                        font-size: 14px;
+                                        line-height: 22px;
+                                        color: #555555;
+                                    "
+                                >
+                                    Click the button below to securely sign in.
+                                    This link will expire in 1 hour and can only
+                                    be used once.
+                                </p>
+                                <!-- Button using VML for Outlook -->
+                                <table
+                                    role="presentation"
+                                    cellpadding="0"
+                                    cellspacing="0"
+                                    border="0"
+                                >
+                                    <tr>
+                                        <td
+                                            align="center"
+                                            style="
+                                                background-color: #0f766e;
+                                                padding: 0;
+                                            "
+                                        >
+                                            <!--[if mso]>
+                                                <v:roundrect
+                                                    xmlns:v="urn:schemas-microsoft-com:vml"
+                                                    href="{{ .ConfirmationURL }}"
+                                                    style="
+                                                        height: 44px;
+                                                        v-text-anchor: middle;
+                                                        width: 160px;
+                                                    "
+                                                    arcsize="0%"
+                                                    fillcolor="#0f766e"
+                                                    strokecolor="#0f766e"
+                                                    strokeweight="0"
+                                                >
+                                                    <v:textbox inset="0,0,0,0">
+                                                        <center
+                                                            style="
+                                                                color: #ffffff;
+                                                                font-family:
+                                                                    Arial,
+                                                                    Helvetica,
+                                                                    sans-serif;
+                                                                font-size: 15px;
+                                                                font-weight: bold;
+                                                            "
+                                                        >
+                                                            Sign In
+                                                        </center>
+                                                    </v:textbox>
+                                                </v:roundrect>
+                                            <![endif]-->
+                                            <!--[if !mso]><!-->
+                                            <a
+                                                href="{{ .ConfirmationURL }}"
+                                                target="_blank"
+                                                style="
+                                                    display: inline-block;
+                                                    padding: 12px 32px;
+                                                    background-color: #0f766e;
+                                                    color: #ffffff;
+                                                    font-size: 15px;
+                                                    font-weight: bold;
+                                                    text-decoration: none;
+                                                    text-align: center;
+                                                "
+                                                >Sign In</a
+                                            >
+                                            <!--<![endif]-->
+                                        </td>
+                                    </tr>
+                                </table>
+                                <!-- Fallback link -->
+                                <p
+                                    style="
+                                        margin: 24px 0 0;
+                                        font-size: 12px;
+                                        line-height: 18px;
+                                        color: #999999;
+                                    "
+                                >
+                                    If the button doesn't work, copy and paste
+                                    this link into your browser:
+                                </p>
+                                <p
+                                    style="
+                                        margin: 4px 0 0;
+                                        font-size: 12px;
+                                        line-height: 18px;
+                                        word-break: break-all;
+                                    "
+                                >
+                                    <a
+                                        href="{{ .ConfirmationURL }}"
+                                        style="
+                                            color: #0f766e;
+                                            text-decoration: underline;
+                                        "
+                                        >{{ .ConfirmationURL }}</a
+                                    >
+                                </p>
+                            </td>
+                        </tr>
+                        <!-- Divider -->
+                        <tr>
+                            <td style="padding: 28px 40px 0">
+                                <table
+                                    role="presentation"
+                                    width="100%"
+                                    cellpadding="0"
+                                    cellspacing="0"
+                                    border="0"
+                                >
+                                    <tr>
+                                        <td
+                                            style="
+                                                border-top: 1px solid #e5e5e5;
+                                                font-size: 0;
+                                                line-height: 0;
+                                                height: 1px;
+                                            "
+                                        >
+                                            &nbsp;
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <!-- Footer -->
+                        <tr>
+                            <td
+                                style="
+                                    padding: 20px 40px 32px;
+                                    text-align: center;
+                                "
+                            >
+                                <p
+                                    style="
+                                        margin: 0;
+                                        font-size: 12px;
+                                        line-height: 18px;
+                                        color: #999999;
+                                    "
+                                >
+                                    You received this email because a sign-in
+                                    was requested for your account. If you
+                                    didn't request this, you can safely ignore
+                                    it.
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                    <!-- Sub-footer -->
+                    <table
+                        role="presentation"
+                        width="480"
+                        cellpadding="0"
+                        cellspacing="0"
+                        border="0"
+                        style="max-width: 480px; width: 100%"
+                    >
+                        <tr>
+                            <td style="padding: 20px 40px; text-align: center">
+                                <p
+                                    style="
+                                        margin: 0;
+                                        font-size: 11px;
+                                        color: #aaaaaa;
+                                    "
+                                >
+                                    &copy; 2026 AI Brief Analyzer. All rights
+                                    reserved.
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>
