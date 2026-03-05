@@ -121,6 +121,11 @@ export const briefAnalysisSchema = z.object({
                             .describe(
                                 'Effort estimate in person-hours (e.g., "40 hours")',
                             ),
+                        cost: z
+                            .string()
+                            .describe(
+                                'Estimated budget for this phase in USD (e.g., "$4,000 - $5,000")',
+                            ),
                     }),
                 )
                 .describe("Breakdown of effort by project phase"),
@@ -130,6 +135,11 @@ export const briefAnalysisSchema = z.object({
             totalEffort: z
                 .string()
                 .describe('Overall effort estimate (e.g., "600-700 hours")'),
+            totalBudget: z
+                .string()
+                .describe(
+                    'Overall estimated budget for the project in USD (e.g., "$60,000 - $80,000")',
+                ),
             teamSize: z
                 .string()
                 .describe(

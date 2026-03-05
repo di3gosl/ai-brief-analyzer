@@ -188,6 +188,7 @@ export async function analyzeBrief(
                     create: {
                         totalDuration: output.roughEstimation.totalDuration,
                         totalEffort: output.roughEstimation.totalEffort,
+                        totalBudget: output.roughEstimation.totalBudget,
                         teamSize: output.roughEstimation.teamSize,
                     },
                 },
@@ -197,6 +198,7 @@ export async function analyzeBrief(
                         name: phase.name,
                         duration: phase.duration,
                         effort: phase.effort,
+                        cost: phase.cost,
                         sortOrder: idx,
                     })),
                 },

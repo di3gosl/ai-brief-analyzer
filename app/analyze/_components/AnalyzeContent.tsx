@@ -39,6 +39,7 @@ export function AnalyzeContent() {
     const model = selectedModel;
     const currentModels = MODELS_BY_PROVIDER[selectedProvider] || [];
     const estimatedCost = `~$${estimateRequestCost(selectedModel).toFixed(5)}/req`;
+    const modelConfig = getModelConfig(selectedModel);
     const [brief, setBrief] = useState(sampleBrief);
     const [hasAnalyzed, setHasAnalyzed] = useState(false);
     const [analysis, setAnalysis] = useState<BriefAnalysis | null>(null);
@@ -125,52 +126,80 @@ export function AnalyzeContent() {
                             </p>
                         </div>
                         {/* Model Controls */}
-                        <div className="flex items-center gap-2 shrink-0">
-                            <Select
-                                value={selectedProvider}
-                                onValueChange={(v) =>
-                                    setProvider(v as ProviderId)
-                                }
-                            >
-                                <SelectTrigger
-                                    className="w-28 h-8 text-xs"
-                                    size="sm"
+                        <div className="flex flex-col items-end gap-1.5 shrink-0">
+                            <div className="flex items-center gap-2">
+                                <Select
+                                    value={selectedProvider}
+                                    onValueChange={(v) =>
+                                        setProvider(v as ProviderId)
+                                    }
                                 >
-                                    <SelectValue placeholder="Provider" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {PROVIDERS.map((p) => (
-                                        <SelectItem key={p.id} value={p.id}>
-                                            {p.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            <Select
-                                value={selectedModel}
-                                onValueChange={setModel}
-                            >
-                                <SelectTrigger
-                                    className="w-36 h-8 text-xs"
-                                    size="sm"
+                                    <SelectTrigger
+                                        className="w-28 h-8 text-xs"
+                                        size="sm"
+                                    >
+                                        <SelectValue placeholder="Provider" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {PROVIDERS.map((p) => (
+                                            <SelectItem key={p.id} value={p.id}>
+                                                {p.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <Select
+                                    value={selectedModel}
+                                    onValueChange={setModel}
                                 >
-                                    <SelectValue placeholder="Model" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {currentModels.map((m) => (
-                                        <SelectItem key={m.id} value={m.id}>
-                                            {m.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            <Badge
-                                variant="outline"
-                                className="hidden sm:flex gap-1 text-xs font-normal text-muted-foreground"
-                            >
-                                <DollarSign className="h-3 w-3" />
-                                {estimatedCost}
-                            </Badge>
+                                    <SelectTrigger
+                                        className="w-36 h-8 text-xs"
+                                        size="sm"
+                                    >
+                                        <SelectValue placeholder="Model" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {currentModels.map((m) => (
+                                            <SelectItem key={m.id} value={m.id}>
+                                                {m.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <Badge
+                                    variant="outline"
+                                    className="hidden sm:flex gap-1 text-xs font-normal text-muted-foreground"
+                                >
+                                    <DollarSign className="h-3 w-3" />
+                                    {estimatedCost}
+                                </Badge>
+                            </div>
+                            {modelConfig && (
+                                <div className="hidden sm:flex items-center gap-1.5 text-xs text-muted-foreground">
+                                    <span>
+                                        {modelConfig.context.displayName}{" "}
+                                        context
+                                    </span>
+                                    <span className="opacity-40">·</span>
+                                    <span>
+                                        $
+                                        {(
+                                            modelConfig.pricing.inputPerToken *
+                                            1_000_000
+                                        ).toFixed(2)}
+                                        /1M in
+                                    </span>
+                                    <span className="opacity-40">·</span>
+                                    <span>
+                                        $
+                                        {(
+                                            modelConfig.pricing.outputPerToken *
+                                            1_000_000
+                                        ).toFixed(2)}
+                                        /1M out
+                                    </span>
+                                </div>
+                            )}
                         </div>
                     </div>
 
