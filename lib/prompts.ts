@@ -30,9 +30,14 @@ MISSING INFORMATION & QUESTIONS
 
 ROUGH ESTIMATION
 - Break the effort into phases with name, duration, effort (person-hours), and estimated cost in USD.
-- Cost estimates should be based on a blended hourly rate of $75-$120 USD for a mid-level software consultancy.
+- For each phase, determine the appropriate hourly rate based on the complexity and skill level the work demands, using global market averages weighted toward US market rates as a reference:
+  • Simple tasks (content entry, basic styling, minor config): $45-$65/hr
+  • Moderate tasks (standard CRUD features, routine integrations, basic testing): $75-$100/hr
+  • Complex tasks (architecture design, advanced integrations, security hardening, performance optimization): $110-$140/hr
+  • Specialist tasks (AI/ML, blockchain, real-time systems, DevOps/infrastructure): $130-$170/hr
+- Include the applied hourly rate (or rate range) for each phase so the cost breakdown is transparent.
 - Provide a total duration, total effort, total estimated budget, recommended team size, and caveats.
-- The total budget should be a range reflecting the uncertainty in the estimation.
+- The total budget should be a range reflecting both estimation uncertainty and the variance in hourly rates across phases.
 
 IMPORTANT GUIDELINES:
 - Be thorough but concise.
