@@ -1,5 +1,13 @@
+import type { Metadata } from "next";
 import { Header } from "@/components/layout/Header";
 import { AnalyticsDashboard } from "./_components/AnalyticsDashboard";
+
+export const metadata: Metadata = {
+    title: "Usage Analytics",
+    description:
+        "Monitor your AI brief analysis usage, costs over time, model distribution, and performance metrics.",
+    robots: { index: false, follow: false },
+};
 
 export default function AnalyticsPage() {
     return (
