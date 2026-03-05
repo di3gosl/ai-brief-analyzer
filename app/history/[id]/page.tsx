@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Calendar, Cpu, DollarSign, Coins } from "lucide-react";
@@ -11,6 +12,21 @@ import { getAnalysis } from "./actions";
 
 interface Props {
     params: Promise<{ id: string }>;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const { id } = await params;
+    const item = await getAnalysis(id);
+
+    if (!item) {
+        return { title: "Analysis Not Found" };
+    }
+
+    return {
+        title: item.title || "Analysis Detail",
+        description: `Detailed AI analysis breakdown for "${item.title || "project brief"}" — including requirements, MVP scope, risks, and budget estimation.`,
+        robots: { index: false, follow: false },
+    };
 }
 
 export default async function HistoryDetailPage({ params }: Props) {

@@ -1,7 +1,15 @@
+import type { Metadata } from "next";
 import { Header } from "@/components/layout/Header";
 import { HistoryList } from "./_components/HistoryList";
 import { getHistory } from "./actions";
 import { MAX_HISTORY_ITEMS } from "@/lib/constants";
+
+export const metadata: Metadata = {
+    title: "Analysis History",
+    description:
+        "Browse your recent project brief analyses with full results, token usage, and cost breakdowns.",
+    robots: { index: false, follow: false },
+};
 
 export default async function HistoryPage() {
     const items = await getHistory();
