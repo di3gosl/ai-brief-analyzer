@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ModelSelectionProvider } from "@/lib/model-context";
+import { GoogleAnalytics } from "@next/third-parties/google";
+import { Analytics } from "@vercel/analytics/next";
+import "./globals.css";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -41,6 +43,8 @@ export default function RootLayout({
                 >
                     <ModelSelectionProvider>{children}</ModelSelectionProvider>
                 </ThemeProvider>
+                <Analytics />
+                <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
             </body>
         </html>
     );
