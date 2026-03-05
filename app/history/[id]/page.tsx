@@ -48,7 +48,7 @@ export default async function HistoryDetailPage({ params }: Props) {
                                     <Cpu className="h-3 w-3" />
                                     {item.modelName}
                                 </Badge>
-                                <span className="text-sm text-muted-foreground">
+                                <span className="text-sm text-muted-foreground capitalize">
                                     {item.provider}
                                 </span>
                             </div>

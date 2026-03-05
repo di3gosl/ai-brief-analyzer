@@ -29,8 +29,10 @@ MISSING INFORMATION & QUESTIONS
 - List questions or gaps to clarify with the client before development begins.
 
 ROUGH ESTIMATION
-- Break the effort into phases with name, duration, and effort (person-hours).
-- Provide a total duration, total effort, recommended team size, and caveats.
+- Break the effort into phases with name, duration, effort (person-hours), and estimated cost in USD.
+- Cost estimates should be based on a blended hourly rate of $75-$120 USD for a mid-level software consultancy.
+- Provide a total duration, total effort, total estimated budget, recommended team size, and caveats.
+- The total budget should be a range reflecting the uncertainty in the estimation.
 
 IMPORTANT GUIDELINES:
 - Be thorough but concise.

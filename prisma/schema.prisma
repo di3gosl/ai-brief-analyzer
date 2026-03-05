@@ -187,6 +187,7 @@ model EstimationSummary {
   analysisId    String @unique
   totalDuration String // e.g. "16-18 weeks"
   totalEffort   String // e.g. "600-700 hours"
+  totalBudget   String @default("") // e.g. "$60,000 - $80,000"
   teamSize      String // e.g. "3-4 developers + 1 designer + 1 QA"
 
   analysis Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
@@ -199,6 +200,7 @@ model EstimationPhase {
   name       String
   duration   String
   effort     String
+  cost       String @default("") // e.g. "$4,000 - $5,000"
   sortOrder  Int
 
   analysis Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
