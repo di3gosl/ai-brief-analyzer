@@ -252,6 +252,9 @@ export function AnalysisResults({ result }: AnalysisResultsProps) {
                                     <th className="text-left py-2 font-medium">
                                         Effort
                                     </th>
+                                    <th className="text-left py-2 font-medium">
+                                        Est. Cost
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -270,6 +273,9 @@ export function AnalysisResults({ result }: AnalysisResultsProps) {
                                             <td className="py-2 font-mono text-muted-foreground">
                                                 {phase.effort}
                                             </td>
+                                            <td className="py-2 font-mono text-muted-foreground">
+                                                {phase.cost}
+                                            </td>
                                         </tr>
                                     ),
                                 )}
@@ -278,7 +284,7 @@ export function AnalysisResults({ result }: AnalysisResultsProps) {
                     </div>
 
                     {/* Summary Stats */}
-                    <div className="grid gap-4 md:grid-cols-3">
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                         <div className="rounded-lg border p-4">
                             <div className="text-xs text-muted-foreground mb-1">
                                 Total Duration
@@ -293,6 +299,14 @@ export function AnalysisResults({ result }: AnalysisResultsProps) {
                             </div>
                             <div className="text-lg font-semibold">
                                 {result.roughEstimation.totalEffort}
+                            </div>
+                        </div>
+                        <div className="rounded-lg border p-4">
+                            <div className="text-xs text-muted-foreground mb-1">
+                                Estimated Budget
+                            </div>
+                            <div className="text-lg font-semibold">
+                                {result.roughEstimation.totalBudget}
                             </div>
                         </div>
                         <div className="rounded-lg border p-4">
