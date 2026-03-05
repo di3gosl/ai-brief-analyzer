@@ -40,7 +40,7 @@ export function AnalyzeContent() {
     const currentModels = MODELS_BY_PROVIDER[selectedProvider] || [];
     const estimatedCost = `~$${estimateRequestCost(selectedModel).toFixed(5)}/req`;
     const modelConfig = getModelConfig(selectedModel);
-    const [brief, setBrief] = useState(sampleBrief);
+    const [brief, setBrief] = useState("");
     const [hasAnalyzed, setHasAnalyzed] = useState(false);
     const [analysis, setAnalysis] = useState<BriefAnalysis | null>(null);
     const [metrics, setMetrics] = useState({
@@ -204,7 +204,7 @@ export function AnalyzeContent() {
                     </div>
 
                     <Textarea
-                        placeholder="Paste your project brief here..."
+                        placeholder={sampleBrief}
                         className={`resize-y font-mono text-sm transition-all duration-500 ${hasAnalyzed ? "min-h-20" : "min-h-75"}`}
                         value={brief}
                         onChange={(e) => setBrief(e.target.value)}

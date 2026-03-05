@@ -1,5 +1,17 @@
+import type { Metadata } from "next";
 import { Header } from "@/components/layout/Header";
 import { AnalyzeContent } from "./_components/AnalyzeContent";
+
+export const metadata: Metadata = {
+    title: "Analyze Brief",
+    description:
+        "Paste any project brief and get a structured technical breakdown with requirements, MVP scope, risks, and budget estimations powered by AI.",
+    openGraph: {
+        title: "Analyze Brief | AI Brief Analyzer",
+        description:
+            "Paste any project brief and get an AI-powered structured technical breakdown in seconds.",
+    },
+};
 
 export default function AnalyzePage() {
     return (
