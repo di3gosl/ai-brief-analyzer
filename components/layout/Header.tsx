@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { FileText, History, BarChart3, Menu, LogOut, User } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -46,8 +47,13 @@ export function Header() {
             <div className="flex h-14 items-center px-4 md:px-6">
                 {/* Logo and App Name */}
                 <div className="flex items-center gap-2 mr-6">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-                        <FileText className="h-4 w-4 text-primary-foreground" />
+                    <div className="flex h-9 w-9 items-center justify-center rounded-xl">
+                        <Image
+                            src="/hexagon-nodes.svg"
+                            alt="Logo"
+                            width={36}
+                            height={36}
+                        />
                     </div>
                     <span className="font-semibold text-lg hidden sm:inline-block">
                         AI Brief Analyzer
