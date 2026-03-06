@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { FileText, Menu, X } from "lucide-react";
+import Image from "next/image";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
@@ -20,8 +21,13 @@ export function LandingHeader() {
             <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
                 {/* Logo */}
                 <Link href="/" className="flex items-center gap-2.5">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary shadow-sm">
-                        <FileText className="h-5 w-5 text-primary-foreground" />
+                    <div className="flex h-9 w-9 items-center justify-center rounded-xl">
+                        <Image
+                            src="/hexagon-nodes.svg"
+                            alt="Logo"
+                            width={36}
+                            height={36}
+                        />
                     </div>
                     <span className="font-bold text-lg tracking-tight">
                         AI Brief Analyzer

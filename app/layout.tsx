@@ -68,6 +68,11 @@ export const metadata: Metadata = {
         canonical: SITE_CONFIG.url,
     },
     category: "technology",
+    icons: {
+        icon: "/hexagon-nodes.svg",
+        shortcut: "/hexagon-nodes.svg",
+        apple: "/hexagon-nodes.svg",
+    },
 };
 
 export default function RootLayout({
